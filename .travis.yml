@@ -7,6 +7,10 @@ compiler:
 os:
 - linux
 - osx
+env:
+- ERPC_THREADS=0 # No threads
+- ERPC_THREADS=1 # PThreads
+  #- ERPC_THREADS=2 # FreeRTOS -- needs more environment set up
 osx_image: xcode8 # use 10.11
 before_install:
 - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update -qq; fi
@@ -22,6 +26,6 @@ install:
 - sudo pip install enum34
 - sudo pip install pyserial
 script:
-- make all
+- make all ERPC_THREADS=$ERPC_THREADS
 - pushd erpcgen/test ; py.test ; popd
 - python test/run_unit_tests.py

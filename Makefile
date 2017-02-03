@@ -19,6 +19,10 @@
 # This file is responsible for building all libraries and applications.
 #
 
+ifdef ERPC_THREADS
+  CXXFLAGS += -DERPC_THREADS=\($(ERPC_THREADS)\)
+endif
+
 include mk/erpc_common.mk
 
 # Turn off parallel jobs for this makefile only. Child makefiles will still use the
