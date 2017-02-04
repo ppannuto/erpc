@@ -42,7 +42,9 @@ TransportArbitrator::TransportArbitrator()
 , m_sharedTransport(NULL)
 , m_clientList(NULL)
 , m_clientFreeList(NULL)
+#if ERPC_THREADS
 , m_clientListMutex()
+#endif
 , m_codec(NULL)
 {
 }
@@ -101,8 +103,10 @@ erpc_status_t TransportArbitrator::receive(MessageBuffer *message)
                 // Swap the received message buffer with the client's message buffer.
                 client->m_request->getCodec()->getBuffer()->swap(message);
 
+#if ERPC_THREADS
                 // Wake up the client receive thread.
                 client->m_sem.put();
+#endif
                 break;
             }
         }
@@ -134,8 +138,10 @@ erpc_status_t TransportArbitrator::clientReceive(client_token_t token)
     // Convert token to pointer to info struct for this client receive request.
     PendingClientInfo *info = reinterpret_cast<PendingClientInfo *>(token);
 
+#if ERPC_THREADS
     // Wait on the semaphore until we're signaled.
     info->m_sem.get(Semaphore::kWaitForever);
+#endif
 
     removePendingClient(info);
 
@@ -144,7 +150,9 @@ erpc_status_t TransportArbitrator::clientReceive(client_token_t token)
 
 TransportArbitrator::PendingClientInfo *TransportArbitrator::addPendingClient()
 {
+#if ERPC_THREADS
     Mutex::Guard lock(m_clientListMutex);
+#endif
 
     // Get a free client info node, or allocate one.
     PendingClientInfo *info = NULL;
@@ -174,7 +182,9 @@ TransportArbitrator::PendingClientInfo *TransportArbitrator::addPendingClient()
 
 void TransportArbitrator::removePendingClient(PendingClientInfo *info)
 {
+#if ERPC_THREADS
     Mutex::Guard lock(m_clientListMutex);
+#endif
 
     // Clear fields.
     info->m_request = NULL;
@@ -217,7 +227,9 @@ void TransportArbitrator::freeClientList(PendingClientInfo *list)
 
 TransportArbitrator::PendingClientInfo::PendingClientInfo()
 : m_request(NULL)
+#if ERPC_THREADS
 , m_sem(0)
+#endif
 , m_isValid(false)
 , m_next(NULL)
 {

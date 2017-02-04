@@ -26,6 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+#if ERPC_THREADS
+
 #include "tcp_transport.h"
 #include <cassert>
 #include <cstdio>
@@ -350,3 +353,5 @@ void TCPTransport::serverThreadStub(void *arg)
         This->serverThread();
     }
 }
+
+#endif //ERPC_THREADS

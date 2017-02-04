@@ -28,6 +28,9 @@
  */
 
 #include "erpc_threading.h"
+
+#if ERPC_THREADS_IS(PTHREADS)
+
 #include <errno.h>
 #include <sys/time.h>
 #include <time.h>
@@ -226,6 +229,8 @@ int Semaphore::getCount() const
 {
     return m_count;
 }
+
+#endif // ERPC_THREADS_IS(PTHREADS)
 
 ////////////////////////////////////////////////////////////////////////////////
 // EOF

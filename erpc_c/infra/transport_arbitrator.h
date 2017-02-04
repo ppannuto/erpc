@@ -102,7 +102,9 @@ protected:
     struct PendingClientInfo
     {
         RequestContext *m_request;
+#if ERPC_THREADS
         Semaphore m_sem;
+#endif
         bool m_isValid;
         PendingClientInfo *m_next;
 
@@ -112,7 +114,9 @@ protected:
 
     PendingClientInfo *m_clientList;     //!< Active client receive requests.
     PendingClientInfo *m_clientFreeList; //!< Unused client receive info structs.
+#if ERPC_THREADS
     Mutex m_clientListMutex;             //!< Mutex guarding the client active and free lists.
+#endif
 
     PendingClientInfo *addPendingClient();
     void removePendingClient(PendingClientInfo *info);

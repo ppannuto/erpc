@@ -27,6 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if ERPC_THREADS
+
 #include "inter_thread_buffer_transport.h"
 #include <cassert>
 
@@ -94,3 +96,5 @@ erpc_status_t InterThreadBufferTransport::send(const MessageBuffer *message)
 
     return kErpcStatus_Success;
 }
+
+#endif // ERPC_THREADS
